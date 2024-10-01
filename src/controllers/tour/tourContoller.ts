@@ -5,7 +5,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 // Controller function to register a new tour package
-export const registerTour = async (req, res) => {
+export const registerTour = async (req:any, res:any) => {
     const {
         title,
         numberOfDays,
@@ -19,7 +19,7 @@ export const registerTour = async (req, res) => {
         accommodationAvailable,
         airportTransportAvailable,
         basePrice,
-        userId, // Assuming the user ID is passed in the request
+        userId,
         dayItineraries,
         tourActivities,
         transportTypes,
@@ -41,18 +41,18 @@ export const registerTour = async (req, res) => {
                 accommodationAvailable,
                 airportTransportAvailable,
                 basePrice,
-                userId, // Link the tour package to the user
+                userId,
                 dayItineraries: {
-                    create: dayItineraries, // Assuming it's an array of day itineraries
+                    create: dayItineraries,
                 },
                 tourActivities: {
-                    create: tourActivities, // Assuming it's an array of tour activities
+                    create: tourActivities,
                 },
                 transportTypes: {
-                    create: transportTypes, // Assuming it's an array of transport types
+                    create: transportTypes,
                 },
                 inclusions: {
-                    create: inclusions, // Assuming it's an array of inclusions
+                    create: inclusions,
                 },
             },
         });
@@ -60,7 +60,7 @@ export const registerTour = async (req, res) => {
         return res.status(201).json({ message: 'Tour package registered successfully', tourPackage });
     } catch (error) {
         console.error("Error registering tour package:", error);
-        return res.status(500).json({ message: 'Error registering tour package', error: error.message });
+        return res.status(500).json({ message: 'Error registering tour package', error: error });
     }
 };
 
