@@ -12,7 +12,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id          Int             @id @default(autoincrement())
   name        String?
@@ -40,7 +39,7 @@ model TourPackage {
   basePrice         Float
 
   userId            Int
-  user              User            @relation(fields: [userId], references: [id])  // Link to the User who created the package
+  user              User            @relation(fields: [userId], references: [id])
 
   dayItineraries    DayItinerary[]
   tourActivities    TourActivity[]
@@ -65,34 +64,34 @@ model DayItinerary {
   destination        String?
 
   tourPackageId      Int
-  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+  tourPackage        TourPackage  @relation(fields: [tourPackageId], references: [id], onDelete: Cascade) // Cascade deletion
 
-  createdAt          DateTime    @default(now())
+  createdAt          DateTime     @default(now())
 }
 
 model TourActivity {
   id                 Int         @id @default(autoincrement())
-  activity           String      // Description of the activity
+  activity           String
   tourPackageId      Int
-  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+  tourPackage        TourPackage  @relation(fields: [tourPackageId], references: [id], onDelete: Cascade) // Cascade deletion
 
-  createdAt          DateTime    @default(now())
+  createdAt          DateTime     @default(now())
 }
 
 model TransportType {
   id                 Int         @id @default(autoincrement())
-  transport          String      // e.g., "Bus", "Flight", "Boat"
+  transport          String
   tourPackageId      Int
-  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+  tourPackage        TourPackage  @relation(fields: [tourPackageId], references: [id], onDelete: Cascade) // Cascade deletion
 
-  createdAt          DateTime    @default(now())
+  createdAt          DateTime     @default(now())
 }
 
 model Inclusion {
   id                 Int         @id @default(autoincrement())
-  inclusion          String      // e.g., "Meals", "Guide", "Tickets"
+  inclusion          String
   tourPackageId      Int
-  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+  tourPackage        TourPackage  @relation(fields: [tourPackageId], references: [id], onDelete: Cascade) // Cascade deletion
 
-  createdAt          DateTime    @default(now())
+  createdAt          DateTime     @default(now())
 }

@@ -186,17 +186,19 @@ export const updateTour = async (req: any, res: any) => {
 export const deleteTourById = async (req: any, res: any) => {
     const { id } = req.params;
 
+    console.log('Delete item with id', id);
     try {
-        const tour = await prisma.tourPackage.delete({
-            where: {
-                id: Number(id),
-            },
-        });
 
+        const tour = await prisma.tourPackage.delete({
+          where: {
+            id: Number(id),
+          },
+        });
+      
         res.json({ message: 'Tour deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while deleting the tour' });
-    }
+      } catch (error) {
+        res.json({ error: error });
+      }
 };
 
 
