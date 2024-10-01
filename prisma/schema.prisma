@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int             @id @default(autoincrement())
+  name        String?
+  email       String          @unique
+  password    String
+  tourPackages TourPackage[]  // One user can enter multiple tour packages
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model TourPackage {
+  id                Int             @id @default(autoincrement())
+  title             String
+  numberOfDays      Int
+  description       String
+  banner            String
+  tourCountry       String
+  tourLevel         String
+  tourFocus         String
+  tourStartCity     String
+  tourEndCity       String
+  accommodationAvailable Boolean
+  airportTransportAvailable Boolean
+  basePrice         Float
+
+  userId            Int
+  user              User            @relation(fields: [userId], references: [id])  // Link to the User who created the package
+
+  dayItineraries    DayItinerary[]
+  tourActivities    TourActivity[]
+  transportTypes    TransportType[]
+  inclusions        Inclusion[]
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model DayItinerary {
+  id                 Int         @id @default(autoincrement())
+  dayNumber          Int         // Represents the day of the itinerary
+  title              String
+  description        String
+  accommodationName  String?
+  accommodationType  String?
+  accommodationLocation String?
+  accommodationLevel String?
+  meal               String?
+  image              String?
+  destination        String?
+
+  tourPackageId      Int
+  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+
+  createdAt          DateTime    @default(now())
+}
+
+model TourActivity {
+  id                 Int         @id @default(autoincrement())
+  activity           String      // Description of the activity
+  tourPackageId      Int
+  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+
+  createdAt          DateTime    @default(now())
+}
+
+model TransportType {
+  id                 Int         @id @default(autoincrement())
+  transport          String      // e.g., "Bus", "Flight", "Boat"
+  tourPackageId      Int
+  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+
+  createdAt          DateTime    @default(now())
+}
+
+model Inclusion {
+  id                 Int         @id @default(autoincrement())
+  inclusion          String      // e.g., "Meals", "Guide", "Tickets"
+  tourPackageId      Int
+  tourPackage        TourPackage @relation(fields: [tourPackageId], references: [id])
+
+  createdAt          DateTime    @default(now())
+}
