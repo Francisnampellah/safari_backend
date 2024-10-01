@@ -1,10 +1,8 @@
 
-// tourController.js
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Controller function to register a new tour package
 export const registerTour = async (req: any, res: any) => {
     const {
         title,
@@ -62,9 +60,7 @@ export const registerTour = async (req: any, res: any) => {
         console.error("Error registering tour package:", error);
         return res.status(500).json({ message: 'Error registering tour package', error: error });
     }
-};
-
-
+}
 
 export const getAllTours = async (req: any, res: any) => {
     try {
@@ -74,7 +70,6 @@ export const getAllTours = async (req: any, res: any) => {
         res.status(500).json({ error: 'An error occurred while fetching tours' });
     }
 };
-
 
 export const getTourById = async (req: any, res: any) => {
     const { id } = req.params;
@@ -200,7 +195,6 @@ export const deleteTourById = async (req: any, res: any) => {
         res.json({ error: error });
       }
 };
-
 
 module.exports = {
     registerTour,
