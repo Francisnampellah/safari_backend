@@ -5,7 +5,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 // Controller function to register a new tour package
-export const registerTour = async (req:any, res:any) => {
+export const registerTour = async (req: any, res: any) => {
     const {
         title,
         numberOfDays,
@@ -64,6 +64,148 @@ export const registerTour = async (req:any, res:any) => {
     }
 };
 
+
+
+export const getAllTours = async (req: any, res: any) => {
+    try {
+        const tours = await prisma.tourPackage.findMany();
+        res.json(tours);
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while fetching tours' });
+    }
+};
+
+
+export const getTourById = async (req: any, res: any) => {
+    const { id } = req.params;
+
+    console.log('id', id);
+
+    try {
+        const tour = await prisma.tourPackage.findUnique({
+            where: {
+                id: Number(id),
+            },
+        });
+
+        if (!tour) {
+            return res.status(404).json({ error: 'Tour not found' });
+        }
+
+        res.json(tour);
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+};
+
+
+export const getToursByUserId = async (req: any, res: any) => {
+    const { userId } = req.params;
+
+    try {
+        const tours = await prisma.tourPackage.findMany({
+            where: {
+                userId: Number(userId),
+            },
+        });
+
+        if (!tours) {
+            return res.status(404).json({ error: 'Tours not found for this user' });
+        }
+
+        res.json(tours);
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while fetching the tours' });
+    }
+};
+
+
+export const updateTour = async (req: any, res: any) => {
+    const { id } = req.params;
+
+    const {
+        title,
+        numberOfDays,
+        description,
+        banner,
+        tourCountry,
+        tourLevel,
+        tourFocus,
+        tourStartCity,
+        tourEndCity,
+        accommodationAvailable,
+        airportTransportAvailable,
+        basePrice,
+        userId,
+        dayItineraries,
+        tourActivities,
+        transportTypes,
+        inclusions,
+    } = req.body;
+
+    try {
+        const tour = await prisma.tourPackage.update({
+            where: {
+                id: Number(id),
+            },
+            data: {
+                title,
+                numberOfDays,
+                description,
+                banner,
+                tourCountry,
+                tourLevel,
+                tourFocus,
+                tourStartCity,
+                tourEndCity,
+                accommodationAvailable,
+                airportTransportAvailable,
+                basePrice,
+                userId,
+                dayItineraries: {
+                    create: dayItineraries,
+                },
+                tourActivities: {
+                    create: tourActivities,
+                },
+                transportTypes: {
+                    create: transportTypes,
+                },
+                inclusions: {
+                    create: inclusions,
+                },
+            },
+        });
+
+        res.json(tour);
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while updating the tour' });
+    }
+};
+
+export const deleteTourById = async (req: any, res: any) => {
+    const { id } = req.params;
+
+    try {
+        const tour = await prisma.tourPackage.delete({
+            where: {
+                id: Number(id),
+            },
+        });
+
+        res.json({ message: 'Tour deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while deleting the tour' });
+    }
+};
+
+
 module.exports = {
     registerTour,
+    getAllTours,
+    getTourById,
+    getToursByUserId,
+    updateTour,
+    deleteTourById,
 };
+
